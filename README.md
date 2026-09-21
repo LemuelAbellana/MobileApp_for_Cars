@@ -1,4 +1,4 @@
-# MotorDesk
+# Cardesk
 
 A small Expo SDK 57 car inventory app connected only to the existing PHP REST API.
 The project lives directly in `D:\CarsMobile`; there is no nested app project.

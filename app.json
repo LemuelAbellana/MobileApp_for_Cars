@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "MotorDesk",
-    "slug": "motordesk",
+    "name": "Cardesk",
+    "slug": "Cardesk",
     "version": "1.0.0",
-    "scheme": "motordesk",
+    "scheme": "Cardesk",
     "userInterfaceStyle": "light",
     "plugins": [
       "expo-router",
@@ -15,7 +15,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.motordesk.inventory"
+      "package": "com.Cardesk.inventory"
     },
     "web": {
       "bundler": "metro",

@@ -1,4 +1,4 @@
-# MotorDesk verification — 2026-09-17
+# Cardesk verification — 2026-09-17
 
 Implementation is present directly in `D:\CarsMobile`. This is a development/demo app;
 full authenticated acceptance and production release remain blocked as listed below.
@@ -97,7 +97,7 @@ If smoke cleanup fails, recover only the exact printed `CODEX_E2E_*` marker.
 ## Runtime evidence
 
 Android 16 / API 36 emulator `emulator-5554` runs with WHPX and SDK 57-compatible Expo Go.
-It booted successfully; MotorDesk's real Android bundle launched. No mock inventory or
+It booted successfully; Cardesk's real Android bundle launched. No mock inventory or
 fake token was injected. The expected missing-token state is visible.
 
 Native checks and screenshots cover inventory/config failure, Retry, Add navigation,

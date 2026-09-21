@@ -1,4 +1,4 @@
-# MotorDesk implementation plan
+# Cardesk implementation plan
 
 Goal: implement the supplied GOAL.md and master prompt directly in this project root.
 

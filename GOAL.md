@@ -1,4 +1,4 @@
-# /goal — MotorDesk Expo SDK 57 Cars CRUD App
+# /goal — Cardesk Expo SDK 57 Cars CRUD App
 
 /goal
 

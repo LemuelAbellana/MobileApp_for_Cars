@@ -8,7 +8,7 @@ export default function RootLayout() {
     headerShadowVisible: false, contentStyle: { backgroundColor: colors.background },
     headerBackButtonDisplayMode: 'minimal',
   }}>
-    <Stack.Screen name="index" options={{ title: 'MotorDesk' }} />
+    <Stack.Screen name="index" options={{ title: 'Cardesk' }} />
     <Stack.Screen name="cars/new" options={{ title: 'Add car' }} />
     <Stack.Screen name="cars/[id]/index" options={{ title: 'Car details' }} />
     <Stack.Screen name="cars/[id]/edit" options={{ title: 'Edit car' }} />

@@ -204,7 +204,7 @@ Use the references to inform a current SDK 57 implementation. Do not copy outdat
 
 ## Product concept
 
-Working title: **MotorDesk**.
+Working title: **Cardesk**.
 
 Purpose: a polished small-business vehicle inventory/showcase app where staff can browse, create, inspect, edit, and delete car listings backed by the existing API.
 
