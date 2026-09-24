@@ -3,7 +3,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, BackHandler, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { deleteCar, getCar } from '../../../src/api/cars';
+import { getExchangeRates, type Currency } from '../../../src/api/exchangeRates';
 import { CarImage } from '../../../src/components/CarImage';
+import { CurrencySelect } from '../../../src/components/CurrencySelect';
 import { Action, ErrorState, Loading, Notice } from '../../../src/components/Feedback';
 import { colors, styles } from '../../../src/config/theme';
 import { useResource } from '../../../src/hooks/useResource';
@@ -13,6 +15,9 @@ export default function CarDetails() {
   const { id, notice } = useLocalSearchParams<{ id: string; notice?: string }>();
   const load = useCallback(() => getCar(Number(id)), [id]);
   const { data: car, loading, error, refresh } = useResource(load);
+  const { data: rates, loading: loadingRates, error: ratesError, refresh: refreshRates } = useResource(getExchangeRates);
+  const [currency, setCurrency] = useState<Currency>('PHP');
+  const displayCurrency = rates ? currency : 'PHP';
   const [deleting, setDeleting] = useState(false);
   const [failure, setFailure] = useState<string>();
   const pending = useRef(false);
@@ -50,7 +55,11 @@ export default function CarDetails() {
       {notice === 'updated' && <Notice message="Changes saved." onDismiss={() => router.setParams({ notice: '' })} />}
       {loading ? <Loading label="Loading vehicle…" /> : error ? <ErrorState message={error} retry={() => void refresh()} /> : car && <>
         <View style={local.image}><CarImage uri={car.picture} label={`${car.brand} ${car.model}`} /></View>
-        <View style={{ gap: 8 }}><Text style={styles.title} accessibilityRole="header">{car.brand} {car.model}</Text><Text style={styles.price}>{formatPrice(car.price)}</Text></View>
+        <View style={{ gap: 8 }}><Text style={styles.title} accessibilityRole="header">{car.brand} {car.model}</Text><Text style={styles.price}>{formatPrice(car.price, displayCurrency, rates)}</Text>
+          <CurrencySelect value={displayCurrency} onChange={setCurrency} disabled={!rates} />
+          {loadingRates && !rates && <Text style={styles.muted}>Loading exchange rates…</Text>}
+          {ratesError && <ErrorState message={ratesError} retry={() => void refreshRates()} />}
+        </View>
         <View style={local.specifications}>{[['Year', car.year], ['Color', car.color], ['Fuel type', car.fuel_type], ['Transmission', car.transmission]].map(([label, value]) => <View key={label} style={local.row}><Text style={styles.muted}>{label}</Text><Text style={[styles.body, local.value]}>{value}</Text></View>)}</View>
         {failure && <ErrorState message={failure} />}
         <Action label="Edit car" disabled={deleting} onPress={() => router.push(`/cars/${car.id}/edit`)} />
