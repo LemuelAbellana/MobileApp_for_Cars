@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Display PHP car prices as PHP, USD, EUR, JPY, or GBP through dropdowns on the inventory and detail screens without changing persisted car data.
+**Goal:** Display PHP car prices as PHP, USD, EUR, JPY, or GBP through per-car and detail currency buttons opening a native modal chooser, without changing persisted car data.
 
-**Architecture:** A credentialless API module fetches and validates one PHP-based rate table. Existing price formatting becomes currency-aware, a small cross-platform dropdown supplies the selection, and inventory keeps per-car selection with one rate resource while detail keeps its own selection/rate resource. Only PHP prices reach the Cars API.
+**Architecture:** A credentialless API module fetches and validates one PHP-based rate table. Existing price formatting becomes currency-aware, a currency button opens a native modal chooser, and inventory keeps per-car selection with one rate resource while detail keeps its own selection/rate resource. Only PHP prices reach the Cars API.
 
 **Tech Stack:** Expo SDK 57, React 19, React Native 0.86, TypeScript 6, native `fetch`, `Intl.NumberFormat`, and Node's built-in test runner.
 
@@ -95,7 +95,7 @@ Run:
 
 Expected: all tests pass.
 
-### Task 2: Accessible currency dropdown
+### Task 2: Accessible currency modal chooser
 
 **Files:**
 - Create: `src/components/CurrencySelect.tsx`
@@ -104,11 +104,11 @@ Expected: all tests pass.
 - Consumes: `CURRENCIES` and `Currency` from `src/api/exchangeRates.ts`.
 - Produces: `CurrencySelect({ value, onChange, disabled? })` where `value: Currency`, `onChange: (currency: Currency) => void`, and `disabled?: boolean`.
 
-- [ ] **Step 1: Implement the smallest cross-platform dropdown**
+- [ ] **Step 1: Implement the native modal chooser**
 
-Use one `Pressable` trigger with label `Currency: {value}` and local `open` state. When open, render the five options as `Pressable` rows. Each option must have an accessible name, `accessibilityState={{ selected: value === currency }}`, a 48-pixel minimum touch target, and must close the menu after selection. Disabled state must close/prevent opening and expose `accessibilityState={{ disabled }}`.
+Use one bordered `Pressable` trigger with label `Currency: {value}` and local `open` state. It opens a transparent, fading native `Modal` with a dim backdrop and centered surface panel (90% viewport width, up to 360 pixels). Show `Select currency`, `Choose how this price is displayed.`, and the five `Pressable` currency rows. Each row must have an accessible name, `accessibilityState={{ selected: value === currency }}`, a 48-pixel minimum touch target, and must close the modal after selection. Include a visible `Cancel` action; backdrop press and Android back also close the modal. Mark the panel `accessibilityViewIsModal`. Disabled state must close/prevent opening using an effect and expose `accessibilityState={{ disabled }}` on the trigger.
 
-Use only `View`, `Text`, `Pressable`, `StyleSheet`, existing theme colors/styles, and React state/effect. Do not install a picker package or add modal/outside-click behavior.
+Use React Native's built-in `Modal`, `View`, `Text`, `Pressable`, `StyleSheet`, the existing `Action`, theme colors/styles, and React state/effect. Do not install a picker package or add icons, persistence, or extra animation.
 
 - [ ] **Step 2: Run static checks**
 
@@ -135,13 +135,13 @@ Expected after Task 1 is present: both commands pass.
 
 - [ ] **Step 1: Add inventory conversion state**
 
-Call `useResource(getExchangeRates)` once in `Inventory`, add `Record<number, Currency>` state keyed by car ID, and compute each card's effective selection as PHP whenever rates are absent. Put a `CurrencySelect` in each card, separate from its navigation `Pressable`, and pass that card's effective currency and rates to both its visible price and accessibility label. Each card defaults to PHP and changes independently.
+Call `useResource(getExchangeRates)` once in `Inventory`, add `Record<number, Currency>` state keyed by car ID, and compute each card's effective selection as PHP whenever rates are absent. Put a `CurrencySelect` button that opens the modal in each card, separate from its navigation `Pressable`, and pass that card's effective currency and rates to both its visible price and accessibility label. Each card defaults to PHP and changes independently.
 
 Show `Loading exchange rates…` while the first request is pending. On rate failure, render `ErrorState` with its returned message and `retry={() => void refreshRates()}`; continue rendering PHP prices.
 
 - [ ] **Step 2: Add detail conversion state**
 
-Repeat one local rate resource and one local `Currency` state in `CarDetails`. Place `CurrencySelect` directly below the displayed price, format with the effective currency/rates, and use the same loading/error/retry behavior. Do not modify `CarForm`, `src/api/cars.ts`, `CarInput`, or any mutation call.
+Repeat one local rate resource and one local `Currency` state in `CarDetails`. Place the `CurrencySelect` button that opens the modal directly below the displayed price, format with the effective currency/rates, and use the same loading/error/retry behavior. Do not modify `CarForm`, `src/api/cars.ts`, `CarInput`, or any mutation call.
 
 - [ ] **Step 3: Run all automated checks**
 
@@ -160,7 +160,7 @@ Expected: every command exits 0.
 
 - [ ] **Step 4: Verify in a real browser**
 
-Start the web app with the portable Node path. On the inventory screen, confirm one Frankfurter request succeeds, each card's dropdown exposes all five accessible options, selecting a foreign currency changes only that card's visible price and accessibility label, and PHP restores its original value. Open a car and repeat on the detail screen. Confirm no Cars API mutation request occurs, the browser console is clean, the dropdowns are keyboard-accessible, and the layout works at desktop and narrow mobile widths.
+Start the web app with the portable Node path. On the inventory screen, confirm one Frankfurter request succeeds, each card's currency button opens a modal with all five accessible options, selecting a foreign currency changes only that card's visible price and accessibility label, and PHP restores its original value. Check Cancel and backdrop dismissal. Open a car and repeat on the detail screen. Confirm no Cars API mutation request occurs, the browser console is clean, the modal controls are keyboard-accessible, and the layout works at desktop and narrow mobile widths.
 
 - [ ] **Step 5: Review and commit the implementation**
 

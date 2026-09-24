@@ -6,8 +6,8 @@ Let users display stored Philippine peso car prices as PHP, USD, EUR, JPY, or GB
 
 ## UI
 
-- Add an accessible currency dropdown to each inventory card. Each card's selection updates only that car's price and accessibility label.
-- Add the same dropdown below the price on the car-detail screen.
+- Add an accessible `Currency: {value}` button to each inventory card. It opens a native modal chooser; each card's selection updates only that car's price and accessibility label.
+- Add the same button below the price on the car-detail screen, opening the same modal chooser.
 - Default each card and the detail screen to PHP. Inventory selection is keyed by car ID; detail selection is local to that screen and does not persist across navigation.
 - While rates are unavailable, continue showing PHP. If loading fails, show a short message and a retry control.
 
@@ -27,14 +27,14 @@ No converted price reaches `CarForm`, `createCar`, or `updateCar`, so the databa
 
 - A small exchange-rate API module owns the endpoint, timeout, response validation, and user-safe errors.
 - Existing formatting utilities format supported currencies and perform the multiplication.
-- A reusable dropdown component provides the cross-platform selector without adding a dependency.
+- A reusable currency button opens a native modal chooser without adding a dependency.
 - Inventory owns one rate request and per-car currency selections; the detail screen owns its own rate request and selection.
 
 ## Verification
 
 - Unit-test URL construction, response mapping, malformed/incomplete responses, request failures, and conversion formatting with mocked `fetch`.
 - Run the project test suite, TypeScript check, ESLint, Expo Doctor, and Expo export.
-- In the web app, verify independent inventory card dropdowns, the detail dropdown, converted prices, accessible labels, one rate request per screen, and a clean console.
+- In the web app, verify independent inventory card currency buttons, the detail button, modal selection and dismissal, converted prices, accessible labels, one rate request per screen, and a clean console.
 
 ## Explicit exclusions
 
