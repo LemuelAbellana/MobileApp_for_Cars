@@ -36,7 +36,9 @@ export default function Inventory() {
       renderItem={({ item: car }) => {
         const currency = rates ? currencies[car.id] ?? 'PHP' : 'PHP';
         return <View style={local.card}>
-          <CarImage key={`${car.picture}:${loading}`} uri={car.picture} label={`${car.brand} ${car.model}`} />
+          <Pressable accessible={false} focusable={false} onPress={() => router.push(`/cars/${car.id}`)} style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}>
+            <CarImage key={`${car.picture}:${loading}`} uri={car.picture} label={`${car.brand} ${car.model}`} />
+          </Pressable>
           <View style={local.cardBody}>
             <Pressable accessibilityRole="button" accessibilityLabel={`View ${car.year} ${car.brand} ${car.model}, ${formatPrice(car.price, currency, rates)}`} onPress={() => router.push(`/cars/${car.id}`)} style={({ pressed }) => [local.cardInfo, { opacity: pressed ? 0.8 : 1 }]}>
               <Text style={styles.subtitle}>{car.brand} {car.model}</Text><Text style={styles.price}>{formatPrice(car.price, currency, rates)}</Text><Text style={styles.muted}>{car.year} · {car.fuel_type} · {car.transmission}</Text>
