@@ -4,7 +4,7 @@
 
 **Goal:** Display PHP car prices as PHP, USD, EUR, JPY, or GBP through dropdowns on the inventory and detail screens without changing persisted car data.
 
-**Architecture:** A credentialless API module fetches and validates one PHP-based rate table. Existing price formatting becomes currency-aware, a small cross-platform dropdown supplies the selection, and each screen keeps local selection/rate state while continuing to pass only PHP prices to the Cars API.
+**Architecture:** A credentialless API module fetches and validates one PHP-based rate table. Existing price formatting becomes currency-aware, a small cross-platform dropdown supplies the selection, and inventory keeps per-car selection with one rate resource while detail keeps its own selection/rate resource. Only PHP prices reach the Cars API.
 
 **Tech Stack:** Expo SDK 57, React 19, React Native 0.86, TypeScript 6, native `fetch`, `Intl.NumberFormat`, and Node's built-in test runner.
 
@@ -135,7 +135,7 @@ Expected after Task 1 is present: both commands pass.
 
 - [ ] **Step 1: Add inventory conversion state**
 
-Call `useResource(getExchangeRates)` once in `Inventory`, add `useState<Currency>('PHP')`, and compute the effective selection as PHP whenever rates are absent. Put `CurrencySelect` in the list header. Pass the effective currency and rates to both the visible card price and the card accessibility label, so one selection updates every rendered car.
+Call `useResource(getExchangeRates)` once in `Inventory`, add `Record<number, Currency>` state keyed by car ID, and compute each card's effective selection as PHP whenever rates are absent. Put a `CurrencySelect` in each card, separate from its navigation `Pressable`, and pass that card's effective currency and rates to both its visible price and accessibility label. Each card defaults to PHP and changes independently.
 
 Show `Loading exchange rates…` while the first request is pending. On rate failure, render `ErrorState` with its returned message and `retry={() => void refreshRates()}`; continue rendering PHP prices.
 
@@ -160,7 +160,7 @@ Expected: every command exits 0.
 
 - [ ] **Step 4: Verify in a real browser**
 
-Start the web app with the portable Node path. On the inventory screen, confirm one Frankfurter request succeeds, the dropdown exposes all five accessible options, each foreign selection updates every visible price, and PHP restores the original values. Open a car and repeat on the detail screen. Confirm no Cars API mutation request occurs, the browser console is clean, the dropdown is keyboard-accessible, and the layout works at desktop and narrow mobile widths.
+Start the web app with the portable Node path. On the inventory screen, confirm one Frankfurter request succeeds, each card's dropdown exposes all five accessible options, selecting a foreign currency changes only that card's visible price and accessibility label, and PHP restores its original value. Open a car and repeat on the detail screen. Confirm no Cars API mutation request occurs, the browser console is clean, the dropdowns are keyboard-accessible, and the layout works at desktop and narrow mobile widths.
 
 - [ ] **Step 5: Review and commit the implementation**
 

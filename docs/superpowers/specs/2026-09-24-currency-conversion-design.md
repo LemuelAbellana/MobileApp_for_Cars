@@ -6,9 +6,9 @@ Let users display stored Philippine peso car prices as PHP, USD, EUR, JPY, or GB
 
 ## UI
 
-- Add one accessible currency dropdown to the inventory header. Its selection updates every visible car price.
-- Add the same dropdown beside the price on the car-detail screen.
-- Default both screens to PHP. Selection is local to each screen and does not persist across navigation.
+- Add an accessible currency dropdown to each inventory card. Each card's selection updates only that car's price and accessibility label.
+- Add the same dropdown below the price on the car-detail screen.
+- Default each card and the detail screen to PHP. Inventory selection is keyed by car ID; detail selection is local to that screen and does not persist across navigation.
 - While rates are unavailable, continue showing PHP. If loading fails, show a short message and a retry control.
 
 ## Data flow
@@ -28,13 +28,13 @@ No converted price reaches `CarForm`, `createCar`, or `updateCar`, so the databa
 - A small exchange-rate API module owns the endpoint, timeout, response validation, and user-safe errors.
 - Existing formatting utilities format supported currencies and perform the multiplication.
 - A reusable dropdown component provides the cross-platform selector without adding a dependency.
-- Each screen owns its selected currency and one rate request.
+- Inventory owns one rate request and per-car currency selections; the detail screen owns its own rate request and selection.
 
 ## Verification
 
 - Unit-test URL construction, response mapping, malformed/incomplete responses, request failures, and conversion formatting with mocked `fetch`.
 - Run the project test suite, TypeScript check, ESLint, Expo Doctor, and Expo export.
-- In the web app, verify both dropdowns, converted prices, accessible labels, the network request, and a clean console.
+- In the web app, verify independent inventory card dropdowns, the detail dropdown, converted prices, accessible labels, one rate request per screen, and a clean console.
 
 ## Explicit exclusions
 
